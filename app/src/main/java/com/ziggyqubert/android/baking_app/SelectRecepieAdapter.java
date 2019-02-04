@@ -30,6 +30,7 @@ public class SelectRecepieAdapter extends RecyclerView.Adapter<SelectRecepieAdap
 
     /**
      * constructor
+     *
      * @param selectRecepieHandeler
      */
     SelectRecepieAdapter(SelectRecepieOnClickHandler selectRecepieHandeler) {
@@ -39,6 +40,7 @@ public class SelectRecepieAdapter extends RecyclerView.Adapter<SelectRecepieAdap
 
     /**
      * handels view creation
+     *
      * @param parent
      * @param viewType
      * @return
@@ -58,6 +60,7 @@ public class SelectRecepieAdapter extends RecyclerView.Adapter<SelectRecepieAdap
 
     /**
      * binding the view to the model
+     *
      * @param holder
      * @param position
      */
@@ -81,6 +84,7 @@ public class SelectRecepieAdapter extends RecyclerView.Adapter<SelectRecepieAdap
 
     /**
      * adds nwe recepies to the data
+     *
      * @param newRecipies
      */
     public void addContent(ArrayList<Recepie> newRecipies) {
@@ -96,9 +100,11 @@ public class SelectRecepieAdapter extends RecyclerView.Adapter<SelectRecepieAdap
 
         TextView recipieName;
         ImageView recipieImage;
+        ImageView favoriteImage;
 
         /**
          * constructor, inits data display properties
+         *
          * @param itemView
          */
         SelectRecipieAdapterViewHolder(View itemView) {
@@ -106,11 +112,13 @@ public class SelectRecepieAdapter extends RecyclerView.Adapter<SelectRecepieAdap
             Log.i(BakingApp.APP_TAG, "create view");
             recipieName = itemView.findViewById(R.id.recipe_name);
             recipieImage = itemView.findViewById(R.id.recipe_image);
+            favoriteImage = itemView.findViewById(R.id.select_favorite);
             itemView.setOnClickListener(this);
         }
 
         /**
          * handels when the recepie is clicked
+         *
          * @param view
          */
         @Override

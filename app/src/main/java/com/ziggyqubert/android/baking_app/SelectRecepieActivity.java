@@ -14,8 +14,12 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.ziggyqubert.android.baking_app.model.Recepie;
+import com.ziggyqubert.android.baking_app.utilities.RequestCallbacks;
 
 import java.util.ArrayList;
 
@@ -29,8 +33,25 @@ public class SelectRecepieActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_recipe);
 
+
         //sets up variables
         SelectRecepieViewModel viewModel = getViewModel();
+
+        //sets teh status handeler for the view model
+        final ProgressBar loadingSpinner = findViewById(R.id.recepies_loading_spinner);
+        final TextView errorMessage = findViewById(R.id.recepies_error_message);
+        viewModel.setObserver(new RequestCallbacks() {
+            @Override
+            public void onSuccess(ArrayList<Recepie> recepies) {
+                loadingSpinner.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                loadingSpinner.setVisibility(View.GONE);
+                errorMessage.setVisibility(View.VISIBLE);
+            }
+        });
 
         //sets up teh recycler view
         MutableLiveData<ArrayList<Recepie>> recepieList = viewModel.getRecepieList();

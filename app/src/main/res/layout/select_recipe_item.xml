@@ -20,6 +20,17 @@
             android:layout_height="150dp"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/select_favorite"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintStart_toStartOf="@+id/recipe_image"
+            app:layout_constraintTop_toTopOf="@+id/recipe_image"
+            tools:src="@drawable/ic_star_border_black_24dp" />
+
         <TextView
             android:id="@+id/recipe_name"
             android:layout_width="wrap_content"

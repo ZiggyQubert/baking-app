@@ -8,6 +8,7 @@
 
     <string name="label_next_button">Next</string>
 
+    <string name="error_loading_recepies">Error loading recipes</string>
     <string name="no_recepie_found">No recipe selected</string>
     <string name="no_step_found">No step selected</string>
 
