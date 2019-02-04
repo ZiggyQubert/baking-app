@@ -1,3 +1,14 @@
 <resources>
-    <string name="app_name">baking-app</string>
+    <string name="app_name">Baking App</string>
+
+    <string name="title_activity_recepie_details">Recepie</string>
+    <string name="label_servings">Servings:</string>
+    <string name="label_ingredients">Ingredients</string>
+    <string name="label_directions">Directions</string>
+
+    <string name="label_next_button">Next</string>
+
+    <string name="no_recepie_found">No recipe selected</string>
+    <string name="no_step_found">No step selected</string>
+
 </resources>
