@@ -13,11 +13,24 @@ import com.ziggyqubert.android.baking_app.BakingApp;
 import com.ziggyqubert.android.baking_app.R;
 import com.ziggyqubert.android.baking_app.model.Recepie;
 
+import java.util.Date;
+
 public class Utilities {
+
+    public static final long MAGIC = 86400000L;
+
+    public static int dateToDays() {
+        return dateToDays(new Date());
+    }
+
+    public static int dateToDays(Date date) {
+        return (int) (date.getTime() / MAGIC);
+    }
 
     /**
      * utility function to display a recepie image in an image view using picasso, standardizes the placeholder and error handeling
-     * @param recepie the recepie to use
+     *
+     * @param recepie   the recepie to use
      * @param imageView the image view to place the image in
      */
     public static void displayrecepieImage(Recepie recepie, ImageView imageView) {

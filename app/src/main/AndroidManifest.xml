@@ -22,9 +22,17 @@
         <activity
             android:name=".RecepieDisplayActivity"
             android:label="@string/title_activity_recepie_details" />
-        <activity android:name=".StepDisplayActivity"></activity>
+        <activity android:name=".StepDisplayActivity" />
 
-        <receiver android:name=".widget.SelectedRecepieWidgetProvider" />
+        <receiver android:name=".widget.FeaturedRecepieWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/featured_recepie_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

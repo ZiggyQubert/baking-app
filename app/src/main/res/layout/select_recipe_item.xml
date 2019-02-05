@@ -28,8 +28,7 @@
             android:layout_marginTop="8dp"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="@+id/recipe_image"
-            app:layout_constraintTop_toTopOf="@+id/recipe_image"
-            tools:src="@drawable/ic_star_border_black_24dp" />
+            app:layout_constraintTop_toTopOf="@+id/recipe_image" />
 
         <TextView
             android:id="@+id/recipe_name"
