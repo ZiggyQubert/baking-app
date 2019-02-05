@@ -66,13 +66,14 @@ public class FeaturedRecepieWidget extends AppWidgetProvider {
                 views.setOnClickPendingIntent(R.id.widget_featured_container, pendingIntent);
 
                 //update the widget UI
+                views.setViewVisibility(R.id.widget_error, View.GONE);
+                views.setViewVisibility(R.id.widget_featured_container, View.VISIBLE);
                 appWidgetManager.updateAppWidget(appWidgetId, views);
             }
 
             @Override
             public void onError(VolleyError error) {
                 views.setViewVisibility(R.id.widget_error, View.VISIBLE);
-                views.setViewVisibility(R.id.widget_background_image, View.GONE);
                 views.setViewVisibility(R.id.widget_featured_container, View.GONE);
                 appWidgetManager.updateAppWidget(appWidgetId, views);
 
