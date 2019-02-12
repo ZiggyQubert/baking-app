@@ -21,7 +21,7 @@ public class Recepie implements Serializable {
     }
 
     public String getImage() {
-        if (image.isEmpty()) {
+        if (image == null || image.isEmpty()) {
             String keyWords = name.replaceAll(" ", ",");
             //using https://loremflickr.com/ to generate an image when one is missing
             return "https://loremflickr.com/400/400/" + keyWords + "/all?lock=" + id;
@@ -36,9 +36,10 @@ public class Recepie implements Serializable {
 
     public String getIngredientsText() {
         String ingridentsString = "";
-
-        for (Integer ingIdx = 0; ingIdx < ingredients.length; ingIdx++) {
-            ingridentsString += ingredients[ingIdx].getIngredientString() + "\n";
+        if (ingredients != null) {
+            for (Integer ingIdx = 0; ingIdx < ingredients.length; ingIdx++) {
+                ingridentsString += ingredients[ingIdx].getIngredientString() + "\n";
+            }
         }
         return ingridentsString;
     }
@@ -46,8 +47,10 @@ public class Recepie implements Serializable {
     public String getStepShortText() {
         String stepsString = "";
 
-        for (Integer ingIdx = 0; ingIdx < steps.length; ingIdx++) {
-            stepsString += steps[ingIdx].getShortDescription() + "\n";
+        if (steps != null) {
+            for (Integer ingIdx = 0; ingIdx < steps.length; ingIdx++) {
+                stepsString += steps[ingIdx].getShortDescription() + "\n";
+            }
         }
         return stepsString;
     }
