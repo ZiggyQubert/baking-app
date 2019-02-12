@@ -17,6 +17,12 @@
             android:layout_height="wrap_content"
             app:resize_mode="fill" />
 
+        <ImageView
+            android:id="@+id/step_image"
+            android:scaleType="fitCenter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/tv_step_description"
             android:layout_width="match_parent"
