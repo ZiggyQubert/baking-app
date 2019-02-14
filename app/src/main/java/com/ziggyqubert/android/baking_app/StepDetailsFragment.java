@@ -6,12 +6,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -29,10 +32,16 @@ import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.Picasso;
 import com.ziggyqubert.android.baking_app.model.Step;
+import com.ziggyqubert.android.baking_app.utilities.Utilities;
 
 
 public class StepDetailsFragment extends Fragment implements ExoPlayer.EventListener {
+
+    private static final String KEY_WINDOW = "window";
+    private static final String KEY_POSITION = "position";
 
     private OnFragmentInteractionListener mListener;
 
@@ -46,6 +55,9 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     private static final String TAG = BakingApp.APP_TAG;
     private static MediaSessionCompat mMediaSession;
+
+    private Integer startWindow;
+    private Long startPosition;
 
     /**
      * constructor
@@ -74,6 +86,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         View rootView = getView();
 
         if (rootView != null && step != null) {
+
             ((TextView) rootView.findViewById(R.id.tv_step_description)).setText(step.getDescription());
 
             releasePlayer();
@@ -82,6 +95,28 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
                 initializePlayer(step.getVideoUri());
             } else {
                 mPlayerView.setVisibility(View.GONE);
+            }
+
+            ImageView imageView = rootView.findViewById(R.id.step_image);
+            if (step.hasImage()) {
+                imageView.setVisibility(View.VISIBLE);
+                Picasso.get()
+                        .load(step.getThumbnailURL())
+                        .placeholder(R.drawable.placeholder)
+                        .error(R.drawable.recepie_not_found)
+                        .into(imageView, new Callback() {
+                            @Override
+                            public void onSuccess() {
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                Log.e(BakingApp.APP_TAG, "Error loading image");
+                                e.printStackTrace();
+                            }
+                        });
+            } else {
+                imageView.setVisibility(View.GONE);
             }
 
             if (isLastStep) {
@@ -114,9 +149,33 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
             // Prepare the MediaSource.
             String userAgent = Util.getUserAgent(context, BakingApp.APP_TAG);
             MediaSource mediaSource = new ExtractorMediaSource(mediaUri, new DefaultDataSourceFactory(context, userAgent), new DefaultExtractorsFactory(), null, null);
+
+            if (startWindow != C.INDEX_UNSET) {
+                mExoPlayer.seekTo(startWindow, startPosition);
+            }
+
             mExoPlayer.prepare(mediaSource);
+
             mExoPlayer.setPlayWhenReady(true);
         }
+    }
+
+    public void onSaveInstanceState(Bundle outState) {
+        updateStartPosition();
+        outState.putInt(KEY_WINDOW, startWindow);
+        outState.putLong(KEY_POSITION, startPosition);
+    }
+
+    private void updateStartPosition() {
+        if (mExoPlayer != null) {
+            startWindow = mExoPlayer.getCurrentWindowIndex();
+            startPosition = Math.max(0, mExoPlayer.getCurrentPosition());
+        }
+    }
+
+    private void clearStartPosition() {
+        startWindow = C.INDEX_UNSET;
+        startPosition = C.TIME_UNSET;
     }
 
     /**
@@ -147,6 +206,19 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
         super.onPause();
         if (mExoPlayer != null) {
             mExoPlayer.setPlayWhenReady(false);
+            releasePlayer();
+        }
+    }
+
+    /**
+     * pause the video when fragment suspends
+     */
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mExoPlayer != null) {
+            mExoPlayer.setPlayWhenReady(false);
+            releasePlayer();
         }
     }
 
@@ -156,6 +228,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public void onResume() {
         super.onResume();
+        initializePlayer(step.getVideoUri());
         if (mExoPlayer != null) {
             mExoPlayer.setPlayWhenReady(true);
         }
@@ -202,6 +275,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
      */
     private void releasePlayer() {
         if (mExoPlayer != null) {
+            updateStartPosition();
             mExoPlayer.stop();
             mExoPlayer.release();
             mExoPlayer = null;
@@ -221,10 +295,18 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            startWindow = savedInstanceState.getInt(KEY_WINDOW);
+            startPosition = savedInstanceState.getLong(KEY_POSITION);
+        } else {
+            clearStartPosition();
+        }
     }
 
     /**
      * handels creating and setting up the view
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -267,6 +349,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
 
     /**
      * on attach check that the context impliments teh correct listiner
+     *
      * @param context
      */
     @Override
@@ -329,6 +412,7 @@ public class StepDetailsFragment extends Fragment implements ExoPlayer.EventList
     public interface OnFragmentInteractionListener {
         /**
          * called when the next button is selected
+         *
          * @param navigateToNext
          */
         void onSelectNextButton(Boolean navigateToNext);

@@ -20,6 +20,10 @@ public class Step implements Serializable {
         return getShortDescription();
     }
 
+    public Boolean hasImage() {
+        return !thumbnailURL.isEmpty();
+    }
+
     public String getDescription() {
         return description;
     }
@@ -34,5 +38,9 @@ public class Step implements Serializable {
 
     public Uri getVideoUri() {
         return Uri.parse(getVideoURL());
+    }
+
+    public String getThumbnailURL() {
+        return thumbnailURL;
     }
 }

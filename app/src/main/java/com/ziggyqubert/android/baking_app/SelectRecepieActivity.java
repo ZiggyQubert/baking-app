@@ -5,7 +5,10 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
+import android.support.test.espresso.IdlingResource;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.ziggyqubert.android.baking_app.model.Recepie;
 import com.ziggyqubert.android.baking_app.utilities.RequestCallbacks;
+import com.ziggyqubert.android.baking_app.utilities.SimpleIdlingResource;
 
 import java.util.ArrayList;
 
@@ -28,28 +32,48 @@ public class SelectRecepieActivity extends AppCompatActivity
 
     private SelectRecepieAdapter selectRecepieAdapter;
 
+
+    // The Idling Resource which will be null in production.
+    @Nullable
+    private SimpleIdlingResource mIdlingResource;
+
+    /**
+     * Only called from test, creates and returns a new {@link SimpleIdlingResource}.
+     */
+    @VisibleForTesting
+    @NonNull
+    public IdlingResource getIdlingResource() {
+        if (mIdlingResource == null) {
+            mIdlingResource = new SimpleIdlingResource();
+        }
+        return mIdlingResource;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_recipe);
 
+        getIdlingResource();
 
         //sets up variables
         SelectRecepieViewModel viewModel = getViewModel();
 
-        //sets teh status handeler for the view model
+        //sets the status handeler for the view model
         final ProgressBar loadingSpinner = findViewById(R.id.recepies_loading_spinner);
         final TextView errorMessage = findViewById(R.id.recepies_error_message);
         viewModel.setObserver(new RequestCallbacks() {
             @Override
             public void onSuccess(ArrayList<Recepie> recepies) {
                 loadingSpinner.setVisibility(View.GONE);
+                mIdlingResource.setIdleState(true);
             }
 
             @Override
             public void onError(VolleyError error) {
                 loadingSpinner.setVisibility(View.GONE);
                 errorMessage.setVisibility(View.VISIBLE);
+                mIdlingResource.setIdleState(true);
             }
         });
 
